@@ -18,9 +18,11 @@ typedef struct  {
 
 typedef struct {
   Estado     *estados;
+  int nestados;
   Estado     *estadoActual;
   char       *simbolos;
   Transicion *transiciones;
+  int ntransiciones;
 } Automata;
 
 int transitar (Automata *a, char simbolo);
@@ -35,4 +37,4 @@ void printAutomata(Automata *a);
 void asignaEstado(Estado *q, int tipo, char *nombre);
 void asignaTransicion(Transicion *t, Estado *q1, Estado *q2, char simbolo);
 
-Automata * crearAutomata( Estado *estados, char *simbolos,  Transicion *transiciones, Estado *estadoInicial);
+Automata * crearAutomata( Estado *estados, int nestados, char *simbolos,  Transicion *transiciones, int ntransiciones, Estado *estadoInicial);

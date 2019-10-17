@@ -4,9 +4,9 @@ void printEstado( Estado *q){
   if (q->tipo == 0){
     printf("\n\tEstado %s de tipo inicial\n", q->nombre);
   } else if (q->tipo == 1){
-    printf("\n\tEstado %s de tipo normal\n", q->nombre);
-  } else {
     printf("\n\tEstado %s de tipo final\n", q->nombre);
+  } else {
+    printf("\n\tEstado %s de tipo normal\n", q->nombre);
   }
 }
 
@@ -18,12 +18,12 @@ void printAutomata(Automata *a){
   int i;
 
   printf("Automata con estos estados: ");
-  for (i = 0; i < 4; i++){
+  for (i = 0; i < a->nestados; i++){
     printEstado(&(a->estados[i]));
   }
 
   printf("Automata con estas transiciones: ");
-  for (i = 0; i < 7; i++){
+  for (i = 0; i < a->ntransiciones; i++){
     printTransicion(&(a->transiciones[i]));
   }
 }
@@ -39,12 +39,14 @@ void asignaTransicion(Transicion *t, Estado *q1, Estado *q2, char simbolo){
   t->simbolo = simbolo;
 }
 
-Automata * crearAutomata( Estado *estados, char *simbolos,  Transicion *transiciones, Estado *estadoInicial){
+Automata * crearAutomata( Estado *estados, int nestados, char *simbolos,  Transicion *transiciones, int ntransiciones, Estado *estadoInicial){
   Automata *a = (Automata *)malloc(sizeof (Automata));
 
   a->estados = estados;
+  a->nestados = nestados;
   a->estadoActual = estadoInicial;
   a->transiciones = transiciones;
+  a->ntransiciones = ntransiciones;
   a->simbolos = simbolos;
 
   return a;
@@ -98,20 +100,76 @@ int parsea ( Automata *a, char *cadena){
       return 1;
     }
   }
-  
+
   return 0;
 }
 
-int main( ) {
-   Estado estados[N_ESTADOS];
+int main(int argc, char *argv[]) {
+   Estado *estados;
    Transicion transiciones[N_TRANS];
    Automata *a;
    char input[10];
+   int nestados;
+   char *alfabeto = (char *)malloc(20 * sizeof(char));
+   int i;
 
+   if (argc != 2){
+     return -1;
+   }
+
+   nestados = atoi(argv[1]);
+   estados = (Estado *)malloc(nestados * sizeof(Estado));
+
+   printf("\nIntroduce el alfabeto como una sola cadena: ");
+   scanf("%s", alfabeto);
+
+   for (i = 0; i < nestados; i++){
+     int tipo;
+     char *nombre;
+     printf("\nIntroduce el estado %d (nombre tipo -0 para inicial, 1 para final, 2 para normal-): ", i+1);
+     scanf("%s %d", nombre, &tipo);
+     asignaEstado(&estados[i], tipo, nombre);
+   }
+
+   /*
+  AFD * a = creaAFD (4, //Num estados
+                     2  //Num simbolos
+                    )
+   asignaEstado(a, "q0", INICIAL);
+   asignaEstado(a, "q1", INICIAL);
+
+   AFD * a2 = creaAFD (6, //Num estados
+                      5  //Num simbolos
+                     )
+    asignaEstado(a, "q0", INICIAL);
+    asignaEstado(a, "q1", INICIAL);
+    asignaTrans(a, "q0", "a", "q1")
+    asignaTrans(a, "q0", "a", "q1")
+
+    AFD * a3 = creaAFD ({
+                          {"q0", INICIAL},
+                          {"q1", NORMAL}
+                        }, //Num estados
+                       {"ab"}  //Num simbolos
+                      )
+
+                      */
+
+   for (i = 0; i < ntransiciones; i++){
+     Estado *q1;
+     Estado *q2;
+     char simbolo;
+     printf("\nIntroduce la transicion %d (Qini Qfin): ", i+1);
+     scanf("%s %d", nombre, &tipo);
+     asignaEstado(&estados[i], tipo, nombre);
+   }
+
+/*
   asignaEstado(&estados[0], 0, "q0");
   asignaEstado(&estados[1], 2, "q1");
   asignaEstado(&estados[2], 2, "q2");
   asignaEstado(&estados[3], 1, "q3");
+
 
   asignaTransicion(&transiciones[0], &estados[0], &estados[3], 'a');
   asignaTransicion(&transiciones[1], &estados[3], &estados[3], 'a');
@@ -121,9 +179,12 @@ int main( ) {
   asignaTransicion(&transiciones[5], &estados[1], &estados[2], 'a');
   asignaTransicion(&transiciones[6], &estados[1], &estados[1], 'b');
   asignaTransicion(&transiciones[7], &estados[2], &estados[2], 'a');
+  */
 
-  a = crearAutomata(estados, "ab*", transiciones, &estados[0]); //reconoce ab*a
+  a = crearAutomata(estados, nestados, alfabeto, transiciones, 0, &estados[0]); //reconoce ab*a
+  printAutomata(a);
 
+/*
   printf("\nIntroducir cadena de entrada a analizar por el AFD: ");
   scanf("%s", input);
 
@@ -132,6 +193,7 @@ int main( ) {
   } else {
     printf("\nNo acepta cadena %s\n", input);
   }
+  */
 
   return 0;
 }
