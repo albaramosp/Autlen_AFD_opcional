@@ -5,9 +5,11 @@
 #define N_ESTADOS 4
 #define N_TRANS 8
 
+typedef enum tipo {INICIAL, NORMAL, FINAL, INICIALFINAL} Tipo;
+
 typedef struct {
   char  nombre[50];
-  int   tipo; //inicial 0, final 1, normal 2
+  Tipo   tipo;
 } Estado;
 
 typedef struct  {
@@ -25,13 +27,24 @@ typedef struct {
   int ntransiciones;
 } Automata;
 
+/*
+typedef struct {
+  Estado     *estados;
+  int nestados;
+  Estado     **estadoActual;
+  char       *simbolos;
+  Transicion **transiciones;
+  int ntransiciones;
+} Automata;
+*/
+
 int transitar (Automata *a, char simbolo);
 int parsea ( Automata *a, char *cadena);
 int parseoCorrecto ( Automata *a, char **cadena);
 int parseoMal ( Automata *a, char **cadena);
 
-void printEstado( Estado *q);
-void printTransicion( Transicion *t);
+void printEstado( Estado q);
+void printTransicion( Transicion t);
 void printAutomata(Automata *a);
 
 void asignaEstado(Estado *q, int tipo, char *nombre);
