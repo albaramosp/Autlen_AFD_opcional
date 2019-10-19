@@ -63,26 +63,34 @@ void asignaTransicion(Automata *a, char *q1, char simbolo, char *q2){
   Transicion t;
   Estado e1;
   Estado e2;
+  int flag1 = 0;
+  int flag2 = 0;
   int j;
 
   for (j = 0; j < a->nestados; j++){
     if (strcmp(a->estados[j].nombre, q1) == 0){
       e1 = a->estados[j];
+      flag1 = 1;
     }
   }
 
   for (j = 0; j < a->nestados; j++){
     if (strcmp(a->estados[j].nombre, q2) == 0){
       e2 = a->estados[j];
+      flag2 = 1;
     }
   }
 
-  t.q1 = e1;
-  t.q2 = e2;
-  t.simbolo = simbolo;
+  if (flag1 == 1 && flag2 == 1){
+    t.q1 = e1;
+    t.q2 = e2;
+    t.simbolo = simbolo;
 
-  a->transiciones[contTrans] = t;
-  contTrans++;
+    a->transiciones[contTrans] = t;
+    contTrans++;
+  } else {
+    printf("\nError al asignar transicion de %s a %s mediante %c: uno de los estados no existe\n", q1, q2, simbolo);
+  }
 }
 
 void liberaAutomata(Automata *a){
@@ -127,7 +135,7 @@ int transitar (Automata *a, char simbolo){
   return transita;
 }
 
-int parsea ( Automata *a, char *cadena){
+int parsea (Automata *a, char *cadena){
   int i = 0;
 
   for (i = 0; i < strlen(cadena); i++){
